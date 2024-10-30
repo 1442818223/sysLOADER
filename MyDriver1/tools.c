@@ -62,8 +62,8 @@ ULONG_PTR QueryModule(PUCHAR moduleName, ULONG_PTR * moduleSize)
 			PRTL_PROCESS_MODULE_INFORMATION moudleInfo = &SystemMoudles->Modules[i];
 		
 			PUCHAR pathName = _strupr(moudleInfo->FullPathName);
-			DbgPrintEx(77, 0, "baseName = %s,fullPath = %s\r\n", 
-				moudleInfo->FullPathName + moudleInfo->OffsetToFileName, moudleInfo->FullPathName);
+			//DbgPrintEx(77, 0, "baseName = %s,fullPath = %s\r\n", 
+			//	moudleInfo->FullPathName + moudleInfo->OffsetToFileName, moudleInfo->FullPathName);
 
 			
 			if (strstr(pathName, kernelModuleName))
@@ -213,11 +213,11 @@ NTSTATUS ReadAllFile(PCWSTR filePath, ULONG actualSize, PVOID returnAddress) {
 	ULONG bytesRead;
 
 	// 打印传入的文件路径
-	DbgPrintEx(77, 0, "ReadAllFile called with path: %ws\n", filePath);
+	//DbgPrintEx(77, 0, "ReadAllFile called with path: %ws\n", filePath);
 
 	// 检查 returnAddress 是否有效
 	if (!returnAddress || actualSize == 0) {
-		DbgPrintEx(77, 0, "Invalid parameters: returnAddress or actualSize is not valid.\n");
+		//DbgPrintEx(77, 0, "Invalid parameters: returnAddress or actualSize is not valid.\n");
 		return STATUS_INVALID_PARAMETER;
 	}
 
@@ -238,7 +238,7 @@ NTSTATUS ReadAllFile(PCWSTR filePath, ULONG actualSize, PVOID returnAddress) {
 	);
 
 	if (!NT_SUCCESS(status)) {
-		DbgPrintEx(77, 0, "Failed to open file: %ws, status: 0x%X\n", filePath, status);
+		//DbgPrintEx(77, 0, "Failed to open file: %ws, status: 0x%X\n", filePath, status);
 		return status; // 处理错误
 	}
 
@@ -246,12 +246,12 @@ NTSTATUS ReadAllFile(PCWSTR filePath, ULONG actualSize, PVOID returnAddress) {
 	buffer = ExAllocatePool(NonPagedPool, actualSize);
 	if (!buffer) {
 		ZwClose(fileHandle);
-		DbgPrintEx(77, 0, "Memory allocation failed for size: %lu\n", actualSize);
+		//DbgPrintEx(77, 0, "Memory allocation failed for size: %lu\n", actualSize);
 		return STATUS_INSUFFICIENT_RESOURCES;
 	}
 
 	// 读取文件内容
-	DbgPrintEx(77, 0, "Attempting to read file: %ws, size: %lu\n", filePath, actualSize);
+	//DbgPrintEx(77, 0, "Attempting to read file: %ws, size: %lu\n", filePath, actualSize);
 
 	LARGE_INTEGER byteOffset;
 	byteOffset.QuadPart = 0;
@@ -274,10 +274,10 @@ NTSTATUS ReadAllFile(PCWSTR filePath, ULONG actualSize, PVOID returnAddress) {
 		bytesRead = (ULONG)ioStatusBlock.Information;
 		// 复制读取的数据
 		RtlCopyMemory(returnAddress, buffer, bytesRead);
-		DbgPrintEx(77, 0, "Successfully read %lu bytes from file: %ws\n", bytesRead, filePath);
+		//DbgPrintEx(77, 0, "Successfully read %lu bytes from file: %ws\n", bytesRead, filePath);
 	}
 	else {
-		DbgPrintEx(77, 0, "Failed to read file: %ws, status: 0x%X\n", filePath, status);
+		//DbgPrintEx(77, 0, "Failed to read file: %ws, status: 0x%X\n", filePath, status);
 		ExFreePool(buffer);
 		ZwClose(fileHandle); // 确保文件句柄被关闭
 		return status; // 返回读取错误的状态

@@ -81,12 +81,12 @@ ULONG64 ExportTableFuncByName(char* pData, char* funcName)
 
 	if (!funcAddr)
 	{
-		DbgPrintEx(77, 0, "没有找到函数%s\r\n", funcName);
+		//DbgPrintEx(77, 0, "没有找到函数%s\r\n", funcName);
 
 	}
 	else
 	{
-		DbgPrintEx(77, 0, "找到函数%s addr %p\r\n", funcName, funcAddr);
+		//DbgPrintEx(77, 0, "找到函数%s addr %p\r\n", funcName, funcAddr);
 	}
 
 
@@ -232,7 +232,7 @@ BOOLEAN LoadDriver(PUCHAR fileBuffer, PDRIVER_OBJECT pDriver, PUNICODE_STRING pR
 
 
 		//清空PE头
-		memset(imageBase, 0, PAGE_SIZE);
+		//memset(imageBase, 0, PAGE_SIZE);
 
 	} while (0);
 

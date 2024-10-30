@@ -168,10 +168,11 @@ std::string GenerateRandomServiceName(size_t length) {
 	return serviceName;
 }
 
+std::string randomServiceName;
 void C驱动加载器Dlg::OnBnClickedButton1()
 {
 	srand(static_cast<unsigned int>(time(nullptr))); // 用当前时间初始化随机种子
-	std::string randomServiceName = GenerateRandomServiceName(6); // 生成8个字符的随机服务名
+	 randomServiceName = GenerateRandomServiceName(6); // 生成8个字符的随机服务名
 
 
 	
@@ -297,5 +298,40 @@ void C驱动加载器Dlg::OnBnClickedButton1()
 
 void C驱动加载器Dlg::OnBnClickedButton2()
 {
-	// TODO: 在此添加控件通知处理程序代码
+	// 确保 randomServiceName 已经在 OnBnClickedButton1 中被设置
+	if (randomServiceName.empty()) {
+		MessageBoxW(L"服务名无效，请先创建服务。", L"错误", MB_OK);
+		return;
+	}
+
+	// 停止服务命令
+	char stopCmd[512];
+	snprintf(stopCmd, sizeof(stopCmd), "sc stop %s", randomServiceName.c_str());
+
+	int resultStop = system(stopCmd);
+	if (resultStop != 0) {
+		printf("停止服务失败\n");
+		DWORD error = GetLastError();
+		TCHAR errorMsg[256];
+		wsprintf(errorMsg, L"停止服务失败 error code: %d", error);
+		MessageBoxW(errorMsg, L"Error", MB_OK);
+		return; // 停止失败时不继续删除
+	}
+
+	// 卸载服务命令
+	char deleteCmd[512];
+	snprintf(deleteCmd, sizeof(deleteCmd), "sc delete %s", randomServiceName.c_str());
+
+	int resultDelete = system(deleteCmd);
+	if (resultDelete != 0) {
+		printf("卸载服务失败\n");
+		DWORD error = GetLastError();
+		TCHAR errorMsg[256];
+		wsprintf(errorMsg, L"卸载服务失败 error code: %d", error);
+		MessageBoxW(errorMsg, L"Error", MB_OK);
+	}
+	else {
+		MessageBoxW(L"服务卸载成功", L"成功", MB_OK);
+	}
 }
+
